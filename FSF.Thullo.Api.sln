@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSF.Thullo.Api", "FSF.Thullo.Api\FSF.Thullo.Api.csproj", "{3D46F41F-DC26-4358-A8A9-E671B62A24D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSF.Thullo.Core", "FSF.Thullo.Core\FSF.Thullo.Core.csproj", "{AA5AADFF-A37A-438C-984B-8FF863D41234}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSF.Thullo.Infrastructure", "FSF.Thullo.Infrastructure\FSF.Thullo.Infrastructure.csproj", "{9A03A317-B26A-4849-B31E-C5547B62343A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{3D46F41F-DC26-4358-A8A9-E671B62A24D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D46F41F-DC26-4358-A8A9-E671B62A24D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D46F41F-DC26-4358-A8A9-E671B62A24D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA5AADFF-A37A-438C-984B-8FF863D41234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA5AADFF-A37A-438C-984B-8FF863D41234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA5AADFF-A37A-438C-984B-8FF863D41234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA5AADFF-A37A-438C-984B-8FF863D41234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A03A317-B26A-4849-B31E-C5547B62343A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A03A317-B26A-4849-B31E-C5547B62343A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A03A317-B26A-4849-B31E-C5547B62343A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A03A317-B26A-4849-B31E-C5547B62343A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
