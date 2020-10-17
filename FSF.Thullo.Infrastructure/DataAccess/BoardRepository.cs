@@ -12,7 +12,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
   public class BoardRepository : IRepository<Board>
   {
     private const string connectionString = @"Data Source=(LocalDb)\SQLSERVER;Initial Catalog=Thullo;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-    //private readonly string _connectionString = @"Data Source=(LocalDb)\SQLSERVER;Initial Catalog=HomeBrew;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
     public void Create(Board entity)
     {
       using(IDbConnection db = new SqlConnection(connectionString))
