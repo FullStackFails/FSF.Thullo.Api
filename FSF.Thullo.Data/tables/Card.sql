@@ -9,6 +9,6 @@
   [CreatedBy] INT NULL, -- To correlate a userId in the future
   [ModifiedDate] DATETIME2 NOT NULL DEFAULT GetDate(),
 
-  CONSTRAINT FK_List FOREIGN KEY (ListId)
+  CONSTRAINT FK_Card_List FOREIGN KEY (ListId)
   REFERENCES dbo.List (Id)
 )

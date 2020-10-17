@@ -7,6 +7,6 @@
   [CreatedBy] INT NULL, -- To correlate a userId in the future
   [ModifiedDate] DATETIME2 NOT NULL DEFAULT GetDate(),
 
-  CONSTRAINT FK_Board FOREIGN KEY (BoardId)
+  CONSTRAINT FK_List_Board FOREIGN KEY (BoardId)
   REFERENCES dbo.Board (Id)
 )
