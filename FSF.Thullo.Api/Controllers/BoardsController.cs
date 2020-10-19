@@ -26,11 +26,33 @@ namespace FSF.Thullo.Api.Controllers
       return Ok(_boardService.Get());
     }
 
+    [HttpGet]
+    [Route("{id}")]
+    public IActionResult Get(int id)
+    {
+      return Ok(_boardService.Get(id));
+    }
+
     [HttpPost]
-    public IActionResult Put(Board board)
+    public IActionResult Post(Board board)
     {
       _boardService.Create(board);
       return Created(string.Empty, null);
+    }
+
+    [HttpPut]
+    public IActionResult Put(Board board)
+    {
+      _boardService.Update(board);
+      return Ok();
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public IActionResult Delete(int id)
+    {
+      _boardService.Delete(id);
+      return Ok();
     }
   }
 }

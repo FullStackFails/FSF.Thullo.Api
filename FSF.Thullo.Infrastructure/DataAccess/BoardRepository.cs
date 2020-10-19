@@ -22,17 +22,26 @@ namespace FSF.Thullo.Infrastructure.DataAccess
         parameters.Add("@CoverPhoto", entity.CoverPhoto, DbType.String, ParameterDirection.Input, 4000);
         parameters.Add("@IsPrivate", entity.IsPrivate, DbType.Byte, ParameterDirection.Input);
 
-        var insertSql = @"INSERT INTO dbo.Board
+        var sql = @"INSERT INTO dbo.Board
                             (Title, CoverPhoto, IsPrivate)
                             VALUES(@Title, @CoverPhoto, @IsPrivate)";
 
-        db.Execute(insertSql, parameters);
+        db.Execute(sql, parameters);
       }
     }
 
-    public void Delete(int Id)
+    public void Delete(int id)
     {
-      throw new NotImplementedException();
+      using (IDbConnection db = new SqlConnection(connectionString))
+      {
+        var parameters = new DynamicParameters();
+        parameters.Add("@Id", id, DbType.Int32, ParameterDirection.Input);
+
+        var sql = @"DELETE dbo.Board
+                      WHERE Id = @Id";
+
+        db.Query(sql, parameters);
+      }
     }
 
     public IEnumerable<Board> Get()
@@ -48,14 +57,43 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       return boards;
     }
 
-    public Board Get(int Id)
+    public Board Get(int id)
     {
-      throw new NotImplementedException();
+      Board board = null;
+      using (IDbConnection db = new SqlConnection(connectionString))
+      {
+        var parameters = new DynamicParameters();
+        parameters.Add("@Id", id, DbType.Int32, ParameterDirection.Input);
+
+        var sql = @"SELECT TOP 1 *
+                      FROM dbo.Board
+                      WHERE Id = @Id";
+
+        board = db.QuerySingle<Board>(sql, parameters);
+      }
+
+      return board;
     }
 
-    public Board Update(Board entity)
+    public void Update(Board entity)
     {
-      throw new NotImplementedException();
+      using (IDbConnection db = new SqlConnection(connectionString))
+      {
+        var parameters = new DynamicParameters();
+        parameters.Add("@Id", entity.Id, DbType.Int32, ParameterDirection.Input);
+        parameters.Add("@Title", entity.Title, DbType.String, ParameterDirection.Input, 100);
+        parameters.Add("@Description", entity.Description, DbType.String, ParameterDirection.Input, 4000);
+        parameters.Add("@CoverPhoto", entity.CoverPhoto, DbType.String, ParameterDirection.Input, 4000);
+
+        var sql = @"UPDATE dbo.Board
+                      SET Title = @Title,
+                      Description = @Description,
+                      CoverPhoto = @CoverPhoto,
+                      ModifiedDate = GetDate()
+                      WHERE Id = @Id";
+
+        db.Query(sql, parameters);
+      }
     }
   }
 }
