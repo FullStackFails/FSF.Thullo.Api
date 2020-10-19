@@ -1,0 +1,13 @@
+﻿CREATE TABLE [dbo].[Label]
+(
+  [Id] INT NOT NULL PRIMARY KEY IDENTITY,
+  [Name] VARCHAR(100) NOT NULL,
+  [BoardId] INT NOT NULL,
+  [CardId] INT NOT NULL,
+
+  CONSTRAINT FK_Label_Board FOREIGN KEY (BoardId)
+  REFERENCES dbo.Board (Id),
+
+  CONSTRAINT FK_Label_Card FOREIGN KEY (BoardId)
+  REFERENCES dbo.Board (Id)
+)

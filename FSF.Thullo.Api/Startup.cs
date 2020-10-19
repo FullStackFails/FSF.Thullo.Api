@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FSF.Thullo.Core.Entities;
+using FSF.Thullo.Core.Interfaces.DataAccess;
+using FSF.Thullo.Core.Services;
+using FSF.Thullo.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +21,8 @@ namespace FSF.Thullo.Api
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
+
+      RegisterCustomServices(services);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +39,12 @@ namespace FSF.Thullo.Api
       {
         endpoints.MapControllers();
       });
+    }
+
+    private void RegisterCustomServices(IServiceCollection services)
+    {
+      services.AddScoped<BoardService>();
+      services.AddScoped<IRepository<Board>, BoardRepository>();
     }
   }
 }
