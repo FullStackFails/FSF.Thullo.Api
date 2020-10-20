@@ -21,6 +21,7 @@ namespace FSF.Thullo.Api
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
+      services.AddHealthChecks();
 
       RegisterCustomServices(services);
     }
@@ -37,6 +38,7 @@ namespace FSF.Thullo.Api
 
       app.UseEndpoints(endpoints =>
       {
+        endpoints.MapHealthChecks("/healthcheck");
         endpoints.MapControllers();
       });
     }
