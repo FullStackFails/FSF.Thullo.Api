@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FSF.Thullo.Tests.Unit", "FS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BC97D0EA-8959-4C0A-AA57-C5312F154CB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSF.Thullo.Api.IntegrationTests", "FSF.Thullo.Api.IntegrationTests\FSF.Thullo.Api.IntegrationTests.csproj", "{216A82C1-F3BA-4B9A-86E1-750AA0DD6981}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSF.Thullo.Api.Tests.Integration", "FSF.Thullo.Api.IntegrationTests\FSF.Thullo.Api.Tests.Integration.csproj", "{216A82C1-F3BA-4B9A-86E1-750AA0DD6981}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
