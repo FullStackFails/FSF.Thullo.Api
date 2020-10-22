@@ -21,12 +21,13 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       {
         var parameters = new DynamicParameters();
         parameters.Add("@Title", entity.Title, DbType.String, ParameterDirection.Input, 100);
+        parameters.Add("@Description", entity.Description, DbType.String, ParameterDirection.Input, 4000);
         parameters.Add("@CoverPhoto", entity.CoverPhoto, DbType.String, ParameterDirection.Input, 4000);
         parameters.Add("@IsPrivate", entity.IsPrivate, DbType.Byte, ParameterDirection.Input);
 
         var sql = @"INSERT INTO dbo.Board
-                            (Title, CoverPhoto, IsPrivate)
-                            VALUES(@Title, @CoverPhoto, @IsPrivate)
+                            (Title, Description, CoverPhoto, IsPrivate)
+                            VALUES(@Title, @Description, @CoverPhoto, @IsPrivate)
 
                     SELECT TOP 1 * FROM dbo.Board WHERE Id = SCOPE_IDENTITY()";
 
