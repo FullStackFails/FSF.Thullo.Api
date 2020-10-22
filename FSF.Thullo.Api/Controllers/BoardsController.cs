@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FSF.Thullo.Core.Entities;
+﻿using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
 namespace FSF.Thullo.Api.Controllers
 {
@@ -36,14 +32,15 @@ namespace FSF.Thullo.Api.Controllers
     [HttpPost]
     public IActionResult Post(Board board)
     {
-      _boardService.Create(board);
-      return Created(string.Empty, null);
+      Board newBoard = _boardService.Create(board);
+      return Created(string.Empty, newBoard);
     }
 
     [HttpPut]
-    public IActionResult Put(Board board)
+    [Route("{id}")]
+    public IActionResult Put(int id, Board board)
     {
-      _boardService.Update(board);
+      _boardService.Update(id, board);
       return Ok();
     }
 

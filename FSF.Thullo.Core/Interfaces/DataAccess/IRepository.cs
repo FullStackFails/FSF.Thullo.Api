@@ -7,10 +7,10 @@ namespace FSF.Thullo.Core.Interfaces.DataAccess
   public interface IRepository<TEntity>
     where TEntity: class
   {
-    void Create(TEntity entity);
+    TEntity Create(TEntity entity);
     IEnumerable<TEntity> Get();
     TEntity Get(int id);
-    void Update(TEntity entity);
+    TEntity Update(int id, TEntity entity);
     void Delete(int id);
   }
 }

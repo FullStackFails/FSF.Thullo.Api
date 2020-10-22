@@ -25,14 +25,14 @@ namespace FSF.Thullo.Core.Services
       return _repository.Get(id);
     }
 
-    public void Create(Board board)
+    public Board Create(Board board)
     {
-      _repository.Create(board);
+      return _repository.Create(board);
     }
 
-    public void Update(Board board)
+    public Board Update(int id, Board board)
     {
-      _repository.Update(board);
+      return _repository.Update(id, board);
     }
 
     public void Delete(int id)
