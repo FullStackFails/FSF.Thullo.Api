@@ -45,8 +45,8 @@ namespace FSF.Thullo.Api
 
     private void RegisterCustomServices(IServiceCollection services)
     {
-      services.AddScoped<BoardService>();
-      services.AddScoped<IRepository<Board>, BoardRepository>();
+      services.AddScoped<ThulloService>();
+      services.AddScoped<IThulloRepository, ThulloRepository>();
     }
   }
 }

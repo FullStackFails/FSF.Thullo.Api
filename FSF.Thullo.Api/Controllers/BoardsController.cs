@@ -2,54 +2,55 @@
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using System;
 
 namespace FSF.Thullo.Api.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/Boards")]
   [ApiController]
   public class BoardsController : ControllerBase
   {
-    private readonly BoardService _boardService;
+    private readonly ThulloService _thulloService;
 
-    public BoardsController(BoardService boardService)
+    public BoardsController(ThulloService thulloService)
     {
-      _boardService = boardService;
+      _thulloService = thulloService;
     }
 
     [HttpGet]
     public IActionResult Get()
     {
-      return Ok(_boardService.Get());
+      return Ok(_thulloService.GetBoards());
     }
 
     [HttpGet]
-    [Route("{id}")]
+    [Route("{boardId}")]
     public IActionResult Get(int id)
     {
-      return Ok(_boardService.Get(id));
+      return Ok(_thulloService.GetBoard(id));
     }
 
     [HttpPost]
     public IActionResult Post(Board board)
     {
-      Board newBoard = _boardService.Create(board);
-      return Created(string.Empty, newBoard);
+      return Created(string.Empty, _thulloService.CreateBoard(board));
     }
 
     [HttpPut]
-    [Route("{id}")]
+    [Route("{boardId}")]
     public IActionResult Put(int id, Board board)
     {
-      _boardService.Update(id, board);
-      return Ok();
+      return Ok(_thulloService.UpdateBoard(id, board));
     }
 
     [HttpDelete]
-    [Route("{id}")]
+    [Route("{boardId}")]
     public IActionResult Delete(int id)
     {
-      _boardService.Delete(id);
+      _thulloService.DeleteBoard(id);
       return Ok();
     }
+
+   
   }
 }
