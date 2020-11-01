@@ -1,5 +1,6 @@
 ﻿using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
@@ -25,9 +26,9 @@ namespace FSF.Thullo.Api.Controllers
 
     [HttpGet]
     [Route("{boardId}")]
-    public IActionResult Get(int id)
+    public IActionResult Get(int boardId)
     {
-      return Ok(_thulloService.GetBoard(id));
+      return Ok(_thulloService.GetBoard(boardId));
     }
 
     [HttpPost]
@@ -38,16 +39,16 @@ namespace FSF.Thullo.Api.Controllers
 
     [HttpPut]
     [Route("{boardId}")]
-    public IActionResult Put(int id, Board board)
+    public IActionResult Put(int boardId, Board board)
     {
-      return Ok(_thulloService.UpdateBoard(id, board));
+      return Ok(_thulloService.UpdateBoard(boardId, board));
     }
 
     [HttpDelete]
     [Route("{boardId}")]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(int boardId)
     {
-      _thulloService.DeleteBoard(id);
+      _thulloService.DeleteBoard(boardId);
       return Ok();
     }
 
