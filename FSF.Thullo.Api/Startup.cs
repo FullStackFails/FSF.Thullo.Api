@@ -20,6 +20,14 @@ namespace FSF.Thullo.Api
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddCors(options =>
+      {
+        options.AddDefaultPolicy(
+            builder =>
+            {
+              builder.WithOrigins("http://localhost:3000");
+            });
+      });
       services.AddControllers();
       services.AddHealthChecks();
 
@@ -35,6 +43,10 @@ namespace FSF.Thullo.Api
       }
 
       app.UseRouting();
+      
+      app.UseCors();
+
+      app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
       {
@@ -45,8 +57,8 @@ namespace FSF.Thullo.Api
 
     private void RegisterCustomServices(IServiceCollection services)
     {
-      services.AddScoped<BoardService>();
-      services.AddScoped<IRepository<Board>, BoardRepository>();
+      services.AddScoped<ThulloService>();
+      services.AddScoped<IThulloRepository, ThulloRepository>();
     }
   }
 }
