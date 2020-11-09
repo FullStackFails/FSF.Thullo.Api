@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using FSF.Thullo.Core.Entities;
+﻿using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FSF.Thullo.Api.Controllers
 {
-    [Route("api/Boards/{boardId}/Lists")]
+  [Route("api/Boards/{boardId}/Lists")]
     [ApiController]
     public class ListsController : ControllerBase
     {
@@ -28,12 +23,11 @@ namespace FSF.Thullo.Api.Controllers
       return Ok(_thulloService.GetLists(boardId));
     }
 
-    // TODO: Put in separate Lists controller?
     [HttpGet]
     [Route("{listId}")]
     public IActionResult Get(int boardId, int listId)
     {
-      return Ok(_thulloService.GetList(listId));
+      return Ok(_thulloService.GetList(boardId, listId));
     }
 
     [HttpPost]
@@ -42,20 +36,18 @@ namespace FSF.Thullo.Api.Controllers
       return Created(string.Empty, _thulloService.CreateList(boardId, list));
     }
 
-    // TODO: Put in separate Lists controller?
     [HttpPut]
     [Route("{listId}")]
     public IActionResult Put(int boardId, int listId, List list)
     {
-      return Ok(_thulloService.UpdateList(listId, list));
+      return Ok(_thulloService.UpdateList(boardId, listId, list));
     }
 
-    // TODO: Put in separate Lists controller?
     [HttpDelete]
     [Route("{listId}")]
     public IActionResult Delete(int boardId, int listId)
     {
-      _thulloService.DeleteList(listId);
+      _thulloService.DeleteList(boardId, listId);
       return Ok();
     }
   }
