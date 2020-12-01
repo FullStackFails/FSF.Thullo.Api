@@ -53,7 +53,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     FROM dbo.Board
                     WHERE Id = @Id";
 
-      return db.QuerySingle<Board>(sql, parameters);
+      return db.QuerySingleOrDefault<Board>(sql, parameters);
     }
 
     public Board UpdateBoard(IDbConnection db, int boardId, Board board)
@@ -75,7 +75,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
 
                   SELECT TOP 1 * FROM dbo.Board WHERE Id = @Id";
 
-      return db.QuerySingle<Board>(sql, parameters);
+      return db.QuerySingleOrDefault<Board>(sql, parameters);
     }
     #endregion
 
@@ -129,7 +129,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     WHERE BoardId = @BoardId
                     AND Id = @ListId";
 
-      return db.QuerySingle<List>(sql, parameters);
+      return db.QuerySingleOrDefault<List>(sql, parameters);
     }
 
     public List UpdateList(IDbConnection db, int boardId, int listId, List list)
@@ -145,7 +145,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
 
                   SELECT TOP 1 * FROM dbo.List WHERE Id = @Id";
 
-      return db.QuerySingle<List>(sql, parameters);
+      return db.QuerySingleOrDefault<List>(sql, parameters);
     }
     #endregion
 
@@ -188,7 +188,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     WHERE ListId = @ListId
                     AND Id = @CardId";
 
-      return db.QuerySingle<Card>(sql, parameters);
+      return db.QuerySingleOrDefault<Card>(sql, parameters);
     }
 
     public Card UpdateCard(IDbConnection db, int boardId, int listId, int cardId, Card card)
@@ -208,7 +208,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
 
                   SELECT TOP 1 * FROM dbo.Card WHERE Id = @Id";
 
-      return db.QuerySingle<Card>(sql, parameters);
+      return db.QuerySingleOrDefault<Card>(sql, parameters);
     }
 
     public void DeleteCard(IDbConnection db, int boardId, int listId, int cardId)
