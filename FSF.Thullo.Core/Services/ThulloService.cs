@@ -26,7 +26,6 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    // Sanity check
     public Board GetBoard(int boardId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
