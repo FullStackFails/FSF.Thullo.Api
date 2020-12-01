@@ -1,9 +1,9 @@
-﻿using FSF.Thullo.Core.Entities;
+﻿using FSF.Thullo.Core.Dto.BoardDtos;
+using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using System;
+using System.Linq;
 
 namespace FSF.Thullo.Api.Controllers
 {
@@ -21,27 +21,35 @@ namespace FSF.Thullo.Api.Controllers
     [HttpGet]
     public IActionResult Get()
     {
-      return Ok(_thulloService.GetBoards());
+      var boards = _thulloService.GetBoards().Select(b => BoardDto.FromBoard(b));
+      return Ok(boards);
     }
 
     [HttpGet]
     [Route("{boardId}")]
     public IActionResult Get(int boardId)
     {
-      return Ok(_thulloService.GetBoard(boardId));
+      var board = BoardDto.FromBoard(_thulloService.GetBoard(boardId));
+      return Ok(board);
     }
 
     [HttpPost]
-    public IActionResult Post(Board board)
+    public IActionResult Post(BoardForCreationDto dto)
     {
-      return Created(string.Empty, _thulloService.CreateBoard(board));
+      Board board = BoardForCreationDto.ToBoard(dto);
+
+      var createdBoard = BoardDto.FromBoard(_thulloService.CreateBoard(board));
+      return Created(string.Empty, createdBoard);
     }
 
     [HttpPut]
     [Route("{boardId}")]
-    public IActionResult Put(int boardId, Board board)
+    public IActionResult Put(int boardId, BoardForUpdateDto dto)
     {
-      return Ok(_thulloService.UpdateBoard(boardId, board));
+      Board board = BoardForUpdateDto.ToBoard(dto);
+
+      var updatedBoard = BoardDto.FromBoard(_thulloService.UpdateBoard(boardId, board));
+      return Ok(updatedBoard);
     }
 
     [HttpDelete]
