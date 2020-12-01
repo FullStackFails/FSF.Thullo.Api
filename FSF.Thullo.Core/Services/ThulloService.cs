@@ -1,5 +1,6 @@
 ﻿using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Interfaces.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -29,7 +30,11 @@ namespace FSF.Thullo.Core.Services
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.GetBoard(db, boardId);
+        Board board = _repository.GetBoard(db, boardId);
+        if (board == null)
+          throw new ArgumentOutOfRangeException(nameof(boardId), $"Board with boardId: {boardId} not found");
+
+        return board;
       }
     }
 
@@ -45,7 +50,11 @@ namespace FSF.Thullo.Core.Services
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.UpdateBoard(db, boardId, board);
+        Board updatedBoard = _repository.UpdateBoard(db, boardId, board);
+        if (updatedBoard == null)
+          throw new ArgumentOutOfRangeException(nameof(boardId), $"Board with boardId: {boardId} not found");
+
+        return updatedBoard;
       }
     }
 
@@ -71,7 +80,11 @@ namespace FSF.Thullo.Core.Services
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.GetList(db, boardId, listId);
+        List list = _repository.GetList(db, boardId, listId);
+        if (list == null)
+          throw new ArgumentOutOfRangeException(nameof(listId), $"List with listId: {listId} not found");
+
+        return list;
       }
     }
 
@@ -87,7 +100,11 @@ namespace FSF.Thullo.Core.Services
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.UpdateList(db, boardId, listId, list);
+        List updatedList = _repository.UpdateList(db, boardId, listId, list);
+        if (list == null)
+          throw new ArgumentOutOfRangeException(nameof(listId), $"List with listId: {listId} not found");
+
+        return updatedList;
       }
     }
 
@@ -113,7 +130,11 @@ namespace FSF.Thullo.Core.Services
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.GetCard(db, boardId, listId, cardId);
+        Card card = _repository.GetCard(db, boardId, listId, cardId);
+        if (card == null)
+          throw new ArgumentOutOfRangeException(nameof(cardId), $"Card with cardId: {cardId} not found");
+
+        return card;
       }
     }
 
@@ -129,7 +150,11 @@ namespace FSF.Thullo.Core.Services
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.UpdateCard(db, boardId, listId, cardId, card);
+        Card updatedCard = _repository.UpdateCard(db, boardId, listId, cardId, card);
+        if (card == null)
+          throw new ArgumentOutOfRangeException(nameof(cardId), $"Card with cardId: {cardId} not found");
+
+        return updatedCard;
       }
     }
 

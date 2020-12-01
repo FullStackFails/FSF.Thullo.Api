@@ -1,7 +1,9 @@
-﻿using FSF.Thullo.Core.Entities;
+﻿using FSF.Thullo.Core.Dto.CardDtos;
+using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 
 namespace FSF.Thullo.Api.Controllers
 {
@@ -19,27 +21,41 @@ namespace FSF.Thullo.Api.Controllers
     [HttpGet]
     public IActionResult Get(int boardId, int listId)
     {
-      return Ok(_thulloService.GetCards(boardId, listId));
+      var cards = _thulloService.GetCards(boardId, listId).Select(c => CardDto.FromCard(c));
+
+      return Ok(cards);
     }
 
     [HttpGet]
     [Route("{cardId}")]
     public IActionResult Get(int boardId, int listId, int cardId)
     {
-      return Ok(_thulloService.GetCard(boardId, listId, cardId));
+      var card = CardDto.FromCard(_thulloService.GetCard(boardId, listId, cardId));
+      return Ok(card);
     }
 
     [HttpPost]
-    public IActionResult Post(int boardId, int listId, Card card)
+    public IActionResult Post(int boardId, int listId, CardforCreationDto dto)
     {
-      return Created(string.Empty, _thulloService.CreateCard(boardId, listId, card));
+      var card = CardforCreationDto.ToCard(dto);
+      card.ListId = listId;
+
+      var createdCard = CardDto.FromCard(_thulloService.CreateCard(boardId, listId, card));
+
+      return Created(string.Empty, createdCard);
     }
 
     [HttpPut]
     [Route("{cardId}")]
-    public IActionResult Put(int boardId, int listId, int cardId, Card card)
+    public IActionResult Put(int boardId, int listId, int cardId, CardForUpdateDto dto)
     {
-      return Ok(_thulloService.UpdateCard(boardId, listId, cardId, card));
+      var card = CardForUpdateDto.ToCard(dto);
+      card.ListId = listId;
+      card.Id = cardId;
+
+      var updatedCard = CardDto.FromCard(_thulloService.UpdateCard(boardId, listId, cardId, card));
+
+      return Ok(updatedCard);
     }
 
     [HttpDelete]
