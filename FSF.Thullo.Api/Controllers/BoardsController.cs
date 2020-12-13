@@ -3,6 +3,7 @@ using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FSF.Thullo.Api.Controllers
@@ -31,9 +32,9 @@ namespace FSF.Thullo.Api.Controllers
     /// </summary>
     /// <returns>A collection of boards.</returns>
     [HttpGet]
-    public IActionResult Get()
+    public ActionResult<List<BoardDto>> Get()
     {
-      var boards = _thulloService.GetBoards().Select(b => BoardDto.FromBoard(b));
+      var boards = _thulloService.GetBoards().Select(b => BoardDto.FromBoard(b)).ToList();
       return Ok(boards);
     }
 
@@ -44,7 +45,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <returns>A single board.</returns>
     [HttpGet]
     [Route("{boardId}")]
-    public IActionResult Get(int boardId)
+    public ActionResult<BoardDto> Get(int boardId)
     {
       var board = BoardDto.FromBoard(_thulloService.GetBoard(boardId));
       return Ok(board);
@@ -56,7 +57,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <param name="dto">The representation of the new board to be created.</param>
     /// <returns>The newly created board.</returns>
     [HttpPost]
-    public IActionResult Post(BoardForCreationDto dto)
+    public ActionResult<BoardDto> Post(BoardForCreationDto dto)
     {
       Board board = BoardForCreationDto.ToBoard(dto);
 
@@ -72,7 +73,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <returns>The updated representation of the board.</returns>
     [HttpPut]
     [Route("{boardId}")]
-    public IActionResult Put(int boardId, BoardForUpdateDto dto)
+    public ActionResult<BoardDto> Put(int boardId, BoardForUpdateDto dto)
     {
       Board board = BoardForUpdateDto.ToBoard(dto);
 

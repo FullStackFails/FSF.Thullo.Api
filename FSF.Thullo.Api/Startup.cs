@@ -25,7 +25,13 @@ namespace FSF.Thullo.Api
               builder.WithOrigins("http://localhost:3000");
             });
       });
-      services.AddControllers();
+
+      services.AddControllers(setupAction =>
+      {
+        // return 406 if we don't support a clients 'Accept' header
+        setupAction.ReturnHttpNotAcceptable = true;
+      });
+
       services.AddHealthChecks();
 
       RegisterCustomServices(services);

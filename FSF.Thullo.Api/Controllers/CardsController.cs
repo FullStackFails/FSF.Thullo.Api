@@ -1,6 +1,7 @@
 ﻿using FSF.Thullo.Core.Dto.CardDtos;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FSF.Thullo.Api.Controllers
@@ -32,9 +33,9 @@ namespace FSF.Thullo.Api.Controllers
     /// <param name="listId">The id of the list.</param>
     /// <returns>A collection of cards.</returns>
     [HttpGet]
-    public IActionResult Get(int boardId, int listId)
+    public ActionResult<List<CardDto>> Get(int boardId, int listId)
     {
-      var cards = _thulloService.GetCards(boardId, listId).Select(c => CardDto.FromCard(c));
+      var cards = _thulloService.GetCards(boardId, listId).Select(c => CardDto.FromCard(c)).ToList();
 
       return Ok(cards);
     }
@@ -48,7 +49,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <returns>A single card.</returns>
     [HttpGet]
     [Route("{cardId}")]
-    public IActionResult Get(int boardId, int listId, int cardId)
+    public ActionResult<CardDto> Get(int boardId, int listId, int cardId)
     {
       var card = CardDto.FromCard(_thulloService.GetCard(boardId, listId, cardId));
       return Ok(card);
@@ -62,7 +63,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <param name="dto">The representation of the new card.</param>
     /// <returns>The newly created card.</returns>
     [HttpPost]
-    public IActionResult Post(int boardId, int listId, CardforCreationDto dto)
+    public ActionResult<CardDto> Post(int boardId, int listId, CardforCreationDto dto)
     {
       var card = CardforCreationDto.ToCard(dto);
       card.ListId = listId;
@@ -82,7 +83,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <returns>The updated card.</returns>
     [HttpPut]
     [Route("{cardId}")]
-    public IActionResult Put(int boardId, int listId, int cardId, CardForUpdateDto dto)
+    public ActionResult<CardDto> Put(int boardId, int listId, int cardId, CardForUpdateDto dto)
     {
       var card = CardForUpdateDto.ToCard(dto);
       card.ListId = listId;

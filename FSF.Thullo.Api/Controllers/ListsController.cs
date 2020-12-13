@@ -1,6 +1,7 @@
 ﻿using FSF.Thullo.Core.Dto.ListDtos;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FSF.Thullo.Api.Controllers
@@ -14,7 +15,6 @@ namespace FSF.Thullo.Api.Controllers
   [ApiController]
   public class ListsController : ControllerBase
   {
-
     private readonly ThulloService _thulloService;
 
     /// <summary>
@@ -32,7 +32,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <param name="boardId">The id of the board you want to get all lists for.</param>
     /// <returns>The lists that belong to the specified board.</returns>
     [HttpGet]
-    public IActionResult Get(int boardId)
+    public ActionResult<List<ListDto>> Get(int boardId)
     {
       var lists = _thulloService.GetLists(boardId).Select(l => ListDto.FromList(l));
       return Ok(lists);
@@ -46,7 +46,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <returns>The list that belongs to the specified board.</returns>
     [HttpGet]
     [Route("{listId}")]
-    public IActionResult Get(int boardId, int listId)
+    public ActionResult<ListDto> Get(int boardId, int listId)
     {
       var list = ListDto.FromList(_thulloService.GetList(boardId, listId));
       return Ok(list);
@@ -59,7 +59,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <param name="dto">The representation of the new list being created.</param>
     /// <returns>The newly created list.</returns>
     [HttpPost]
-    public IActionResult Post(int boardId, ListForCreationDto dto)
+    public ActionResult<ListDto> Post(int boardId, ListForCreationDto dto)
     {
       var list = ListForCreationDto.ToList(dto);
       list.BoardId = boardId;
@@ -77,7 +77,7 @@ namespace FSF.Thullo.Api.Controllers
     /// <returns>The updated representation of the list.</returns>
     [HttpPut]
     [Route("{listId}")]
-    public IActionResult Put(int boardId, int listId, ListForUpdateDto dto)
+    public ActionResult<ListDto> Put(int boardId, int listId, ListForUpdateDto dto)
     {
       var list = ListForUpdateDto.ToList(dto);
       list.BoardId = boardId;
