@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FSF.Thullo.Api</name>
+    </assembly>
+    <members>
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.Get(System.Int32)">
+            <summary>
+            Get all lists for a board
+            </summary>
+            <param name="boardId">The id of the board you want to get all lists for</param>
+            <returns>The lists and their cards that belong to the specified board</returns>
+        </member>
+    </members>
+</doc>
