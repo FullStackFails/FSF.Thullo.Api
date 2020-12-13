@@ -5,13 +5,22 @@ using System.Linq;
 
 namespace FSF.Thullo.Api.Controllers
 {
-  [Route("api/Boards/{boardId}/Lists")]
+  /// <summary>
+  /// This controller provides an interface for working with lists.
+  /// Lists have a many to one relationship with a given board.
+  /// A list is a subresource of a board.
+  /// </summary>
+  [Route("api/boards/{boardId}/lists")]
   [ApiController]
   public class ListsController : ControllerBase
   {
 
     private readonly ThulloService _thulloService;
 
+    /// <summary>
+    /// Constructor for the lists controller.
+    /// </summary>
+    /// <param name="thulloService">Delegation service for Thullo business logic.</param>
     public ListsController(ThulloService thulloService)
     {
       _thulloService = thulloService;
