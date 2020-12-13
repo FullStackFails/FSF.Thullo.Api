@@ -1,5 +1,4 @@
 ﻿using FSF.Thullo.Core.Dto.ListDtos;
-using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -7,9 +6,9 @@ using System.Linq;
 namespace FSF.Thullo.Api.Controllers
 {
   [Route("api/Boards/{boardId}/Lists")]
-    [ApiController]
-    public class ListsController : ControllerBase
-    {
+  [ApiController]
+  public class ListsController : ControllerBase
+  {
 
     private readonly ThulloService _thulloService;
 
@@ -18,7 +17,11 @@ namespace FSF.Thullo.Api.Controllers
       _thulloService = thulloService;
     }
 
-
+    /// <summary>
+    /// Gets all lists belonging to a board.
+    /// </summary>
+    /// <param name="boardId">The id of the board you want to get all lists for.</param>
+    /// <returns>The lists that belong to the specified board.</returns>
     [HttpGet]
     public IActionResult Get(int boardId)
     {
@@ -26,6 +29,12 @@ namespace FSF.Thullo.Api.Controllers
       return Ok(lists);
     }
 
+    /// <summary>
+    /// Gets a single list belonging to a board.
+    /// </summary>
+    /// <param name="boardId">The id of the board you want to get a list for.</param>
+    /// <param name="listId">The id of the list you want.</param>
+    /// <returns>The list that belongs to the specified board.</returns>
     [HttpGet]
     [Route("{listId}")]
     public IActionResult Get(int boardId, int listId)
@@ -34,6 +43,12 @@ namespace FSF.Thullo.Api.Controllers
       return Ok(list);
     }
 
+    /// <summary>
+    /// Creates/Adds a new list associated to a board.
+    /// </summary>
+    /// <param name="boardId">The id of the board you want add a list to.</param>
+    /// <param name="dto">The representation of the new list being created.</param>
+    /// <returns>The newly created list.</returns>
     [HttpPost]
     public IActionResult Post(int boardId, ListForCreationDto dto)
     {
@@ -44,6 +59,13 @@ namespace FSF.Thullo.Api.Controllers
       return Created(string.Empty, createdList);
     }
 
+    /// <summary>
+    /// Updates a single list belonging to a board.
+    /// </summary>
+    /// <param name="boardId">The id of the board that the list being updated belongs to.</param>
+    /// <param name="listId">The id of the list that you want to update.</param>
+    /// <param name="dto">The desired updated representation.</param>
+    /// <returns>The updated representation of the list.</returns>
     [HttpPut]
     [Route("{listId}")]
     public IActionResult Put(int boardId, int listId, ListForUpdateDto dto)
@@ -57,6 +79,11 @@ namespace FSF.Thullo.Api.Controllers
       return Ok(updatedList);
     }
 
+    /// <summary>
+    /// Deletes a list from a given board.
+    /// </summary>
+    /// <param name="boardId">The id of the board that the list being deleted belongs to.</param>
+    /// <param name="listId">The id of the list that you want to delete.</param>
     [HttpDelete]
     [Route("{listId}")]
     public IActionResult Delete(int boardId, int listId)
