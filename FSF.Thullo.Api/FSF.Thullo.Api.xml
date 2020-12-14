@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FSF.Thullo.Api</name>
+    </assembly>
+    <members>
+        <member name="T:FSF.Thullo.Api.Controllers.BoardsController">
+            <summary>
+            This controller provides an interface for working with boards.
+            Boards are the root/parent resource to lists and cards.
+            </summary>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.#ctor(FSF.Thullo.Core.Services.ThulloService)">
+            <summary>
+            Constructor for the boards controller.
+            </summary>
+            <param name="thulloService">Delegation service for Thullo business logic.</param>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.Get">
+            <summary>
+            Gets all boards.
+            </summary>
+            <returns>A collection of boards.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.Get(System.Int32)">
+            <summary>
+            Gets a single board.
+            </summary>
+            <param name="boardId">The list of the board.</param>
+            <returns>A single board.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.Post(FSF.Thullo.Core.Dto.BoardDtos.BoardForCreationDto)">
+            <summary>
+            Creates a new board.
+            </summary>
+            <param name="dto">The representation of the new board to be created.</param>
+            <returns>The newly created board.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.Put(System.Int32,FSF.Thullo.Core.Dto.BoardDtos.BoardForUpdateDto)">
+            <summary>
+            Updates an existing board.
+            </summary>
+            <param name="boardId">The id of the board.</param>
+            <param name="dto">The updated representation of the board.</param>
+            <returns>The updated representation of the board.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.Delete(System.Int32)">
+            <summary>
+            Deletes a board.
+            </summary>
+            <param name="boardId">The id of the board.</param>
+        </member>
+        <member name="T:FSF.Thullo.Api.Controllers.CardsController">
+            <summary>
+            This controller provides an interface for working with cards.
+            Cards have a many to one relationship with a given list.
+            A Card is a subresources of a List.
+            </summary>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.CardsController.#ctor(FSF.Thullo.Core.Services.ThulloService)">
+            <summary>
+            Constructor for the cards controller.
+            </summary>
+            <param name="thulloService">Delegation service for Thullo business logic.</param>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.CardsController.Get(System.Int32,System.Int32)">
+            <summary>
+            Gets all cards belonging to a list.
+            </summary>
+            <param name="boardId">The id of the board.</param>
+            <param name="listId">The id of the list.</param>
+            <returns>A collection of cards.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.CardsController.Get(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Gets a single card.
+            </summary>
+            <param name="boardId">The id of the board.</param>
+            <param name="listId">The id of the list.</param>
+            <param name="cardId">The id of the card.</param>
+            <returns>A single card.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.CardsController.Post(System.Int32,System.Int32,FSF.Thullo.Core.Dto.CardDtos.CardforCreationDto)">
+            <summary>
+            Creates a new card associated to a list.
+            </summary>
+            <param name="boardId">The id of the board.</param>
+            <param name="listId">The id of the list.</param>
+            <param name="dto">The representation of the new card.</param>
+            <returns>The newly created card.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.CardsController.Put(System.Int32,System.Int32,System.Int32,FSF.Thullo.Core.Dto.CardDtos.CardForUpdateDto)">
+            <summary>
+            Updates a card.
+            </summary>
+            <param name="boardId">The id of the board.</param>
+            <param name="listId">The id of the list.</param>
+            <param name="cardId">The id of the card.</param>
+            <param name="dto">The updated representation of the card.</param>
+            <returns>The updated card.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.CardsController.Delete(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Deletes a card.
+            </summary>
+            <param name="boardId">The id of the board.</param>
+            <param name="listId">The id of the list.</param>
+            <param name="cardId">The id of the card.</param>
+        </member>
+        <member name="T:FSF.Thullo.Api.Controllers.ListsController">
+            <summary>
+            This controller provides an interface for working with lists.
+            Lists have a many to one relationship with a given board.
+            A list is a subresource of a board.
+            </summary>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.#ctor(FSF.Thullo.Core.Services.ThulloService)">
+            <summary>
+            Constructor for the lists controller.
+            </summary>
+            <param name="thulloService">Delegation service for Thullo business logic.</param>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.Get(System.Int32)">
+            <summary>
+            Gets all lists belonging to a board.
+            </summary>
+            <param name="boardId">The id of the board you want to get all lists for.</param>
+            <returns>The lists that belong to the specified board.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.Get(System.Int32,System.Int32)">
+            <summary>
+            Gets a single list belonging to a board.
+            </summary>
+            <param name="boardId">The id of the board you want to get a list for.</param>
+            <param name="listId">The id of the list you want.</param>
+            <returns>The list that belongs to the specified board.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.Post(System.Int32,FSF.Thullo.Core.Dto.ListDtos.ListForCreationDto)">
+            <summary>
+            Creates/Adds a new list associated to a board.
+            </summary>
+            <param name="boardId">The id of the board you want add a list to.</param>
+            <param name="dto">The representation of the new list being created.</param>
+            <returns>The newly created list.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.Put(System.Int32,System.Int32,FSF.Thullo.Core.Dto.ListDtos.ListForUpdateDto)">
+            <summary>
+            Updates a single list belonging to a board.
+            </summary>
+            <param name="boardId">The id of the board that the list being updated belongs to.</param>
+            <param name="listId">The id of the list that you want to update.</param>
+            <param name="dto">The desired updated representation.</param>
+            <returns>The updated representation of the list.</returns>
+        </member>
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.Delete(System.Int32,System.Int32)">
+            <summary>
+            Deletes a list from a given board.
+            </summary>
+            <param name="boardId">The id of the board that the list being deleted belongs to.</param>
+            <param name="listId">The id of the list that you want to delete.</param>
+        </member>
+    </members>
+</doc>
