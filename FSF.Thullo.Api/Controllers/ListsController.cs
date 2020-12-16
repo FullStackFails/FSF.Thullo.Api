@@ -1,15 +1,17 @@
 ﻿using FSF.Thullo.Core.Dto.ListDtos;
 using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace FSF.Thullo.Api.Controllers
 {
   [Route("api/Boards/{boardId}/Lists")]
-    [ApiController]
-    public class ListsController : ControllerBase
-    {
+  [ApiController]
+  [Authorize]
+  public class ListsController : ControllerBase
+  {
 
     private readonly ThulloService _thulloService;
 
