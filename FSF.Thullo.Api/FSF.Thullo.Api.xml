@@ -107,6 +107,12 @@
             <param name="listId">The id of the list.</param>
             <param name="cardId">The id of the card.</param>
         </member>
+        <member name="T:FSF.Thullo.Api.Controllers.IdentityController">
+            <summary>
+            Demo Controller for setting up OpenIdConnect.
+            TODO: Remove this controller once App is connected via bearer tokens.
+            </summary>
+        </member>
         <member name="T:FSF.Thullo.Api.Controllers.ListsController">
             <summary>
             This controller provides an interface for working with lists.
