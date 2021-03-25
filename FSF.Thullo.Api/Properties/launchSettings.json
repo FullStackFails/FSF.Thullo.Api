@@ -4,6 +4,7 @@
     "anonymousAuthentication": true, 
     "iisExpress": {
       "applicationUrl": "http://localhost:55464",
+      "launchUrl": "ThulloApi",
       "sslPort": 44355
     }
   },

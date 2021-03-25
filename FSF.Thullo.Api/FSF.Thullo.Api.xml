@@ -10,7 +10,7 @@
             Boards are the root/parent resource to lists and cards.
             </summary>
         </member>
-        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.#ctor(FSF.Thullo.Core.Services.ThulloService)">
+        <member name="M:FSF.Thullo.Api.Controllers.BoardsController.#ctor(FSF.Thullo.Core.Services.ThulloService,FSF.Thullo.Core.Interfaces.Security.ISessionService)">
             <summary>
             Constructor for the boards controller.
             </summary>

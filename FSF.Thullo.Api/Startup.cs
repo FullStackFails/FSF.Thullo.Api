@@ -1,15 +1,17 @@
 using FSF.Thullo.Core.Interfaces.DataAccess;
+using FSF.Thullo.Core.Interfaces.Security;
 using FSF.Thullo.Core.Services;
 using FSF.Thullo.Infrastructure.DataAccess;
-using IdentityServer4.AccessTokenValidation;
+using FSF.Thullo.Infrastructure.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Reflection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FSF.Thullo.Api
 {
@@ -19,6 +21,9 @@ namespace FSF.Thullo.Api
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
+      // remove bearer token claims renaming
+      JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
       services.AddControllers(setupAction =>
       {
         // return 406 if we don't support a clients 'Accept' header
@@ -92,6 +97,7 @@ namespace FSF.Thullo.Api
     {
       services.AddScoped<ThulloService>();
       services.AddScoped<IThulloRepository, ThulloRepository>();
+      services.AddSingleton<ISessionService, SessionService>();
     }
 
     private void RegisterSwaggerServices(IServiceCollection services)

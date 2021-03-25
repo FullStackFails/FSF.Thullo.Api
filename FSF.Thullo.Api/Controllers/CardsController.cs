@@ -1,4 +1,5 @@
 ﻿using FSF.Thullo.Core.Dto.CardDtos;
+using FSF.Thullo.Core.Interfaces.Security;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,17 @@ namespace FSF.Thullo.Api.Controllers
   public class CardsController : ControllerBase
   {
     private readonly ThulloService _thulloService;
+    private readonly ISessionService _sessionService;
 
     /// <summary>
     /// Constructor for the cards controller.
     /// </summary>
     /// <param name="thulloService">Delegation service for Thullo business logic.</param>
-    public CardsController(ThulloService thulloService)
+    /// <param name="sessionService">Service for creating a User Information object.</param>
+    public CardsController(ThulloService thulloService, ISessionService sessionService)
     {
       _thulloService = thulloService;
+      _sessionService = sessionService;
     }
 
     /// <summary>
@@ -37,6 +41,8 @@ namespace FSF.Thullo.Api.Controllers
     [HttpGet]
     public ActionResult<List<CardDto>> Get(int boardId, int listId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var cards = _thulloService.GetCards(boardId, listId).Select(c => CardDto.FromCard(c)).ToList();
 
       return Ok(cards);
@@ -53,6 +59,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{cardId}")]
     public ActionResult<CardDto> Get(int boardId, int listId, int cardId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var card = CardDto.FromCard(_thulloService.GetCard(boardId, listId, cardId));
       return Ok(card);
     }
@@ -67,6 +75,8 @@ namespace FSF.Thullo.Api.Controllers
     [HttpPost]
     public ActionResult<CardDto> Post(int boardId, int listId, CardforCreationDto dto)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var card = CardforCreationDto.ToCard(dto);
       card.ListId = listId;
 
@@ -87,6 +97,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{cardId}")]
     public ActionResult<CardDto> Put(int boardId, int listId, int cardId, CardForUpdateDto dto)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var card = CardForUpdateDto.ToCard(dto);
       card.ListId = listId;
       card.Id = cardId;
@@ -106,6 +118,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{cardId}")]
     public IActionResult Delete(int boardId, int listId, int cardId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       _thulloService.DeleteCard(boardId, listId, cardId);
       return Ok();
     }
