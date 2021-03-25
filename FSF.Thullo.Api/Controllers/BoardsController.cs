@@ -1,5 +1,6 @@
 ﻿using FSF.Thullo.Core.Dto.BoardDtos;
 using FSF.Thullo.Core.Entities;
+using FSF.Thullo.Core.Interfaces.Security;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,19 @@ namespace FSF.Thullo.Api.Controllers
   public class BoardsController : ControllerBase
   {
     private readonly ThulloService _thulloService;
+    private readonly ISessionService _sessionService;
 
     /// <summary>
     /// Constructor for the boards controller.
     /// </summary>
     /// <param name="thulloService">Delegation service for Thullo business logic.</param>
-    public BoardsController(ThulloService thulloService)
+    /// <param name="sessionService">Service for creating a User Information object.</param>
+    public BoardsController(
+      ThulloService thulloService,
+      ISessionService sessionService)
     {
       _thulloService = thulloService;
+      _sessionService = sessionService;
     }
 
     /// <summary>
@@ -36,6 +42,8 @@ namespace FSF.Thullo.Api.Controllers
     [HttpGet]
     public ActionResult<List<BoardDto>> Get()
     {
+      ISession session = _sessionService.GetSession(User);
+
       var boards = _thulloService.GetBoards().Select(b => BoardDto.FromBoard(b)).ToList();
       return Ok(boards);
     }
@@ -49,6 +57,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{boardId}")]
     public ActionResult<BoardDto> Get(int boardId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var board = BoardDto.FromBoard(_thulloService.GetBoard(boardId));
       return Ok(board);
     }
@@ -61,6 +71,8 @@ namespace FSF.Thullo.Api.Controllers
     [HttpPost]
     public ActionResult<BoardDto> Post(BoardForCreationDto dto)
     {
+      ISession session = _sessionService.GetSession(User);
+
       Board board = BoardForCreationDto.ToBoard(dto);
 
       var createdBoard = BoardDto.FromBoard(_thulloService.CreateBoard(board));
@@ -77,6 +89,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{boardId}")]
     public ActionResult<BoardDto> Put(int boardId, BoardForUpdateDto dto)
     {
+      ISession session = _sessionService.GetSession(User);
+
       Board board = BoardForUpdateDto.ToBoard(dto);
 
       var updatedBoard = BoardDto.FromBoard(_thulloService.UpdateBoard(boardId, board));
@@ -91,10 +105,10 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{boardId}")]
     public IActionResult Delete(int boardId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       _thulloService.DeleteBoard(boardId);
       return Ok();
     }
-
-   
   }
 }

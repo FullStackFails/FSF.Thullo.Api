@@ -1,4 +1,5 @@
 ﻿using FSF.Thullo.Core.Dto.ListDtos;
+using FSF.Thullo.Core.Interfaces.Security;
 using FSF.Thullo.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,17 @@ namespace FSF.Thullo.Api.Controllers
   public class ListsController : ControllerBase
   {
     private readonly ThulloService _thulloService;
+    private readonly ISessionService _sessionService;
 
     /// <summary>
     /// Constructor for the lists controller.
     /// </summary>
     /// <param name="thulloService">Delegation service for Thullo business logic.</param>
-    public ListsController(ThulloService thulloService)
+    /// <param name="sessionService">Service for creating a User Information object.</param>
+    public ListsController(ThulloService thulloService, ISessionService sessionService)
     {
       _thulloService = thulloService;
+      _sessionService = sessionService;
     }
 
     /// <summary>
@@ -36,6 +40,8 @@ namespace FSF.Thullo.Api.Controllers
     [HttpGet]
     public ActionResult<List<ListDto>> Get(int boardId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var lists = _thulloService.GetLists(boardId).Select(l => ListDto.FromList(l));
       return Ok(lists);
     }
@@ -50,6 +56,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{listId}")]
     public ActionResult<ListDto> Get(int boardId, int listId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var list = ListDto.FromList(_thulloService.GetList(boardId, listId));
       return Ok(list);
     }
@@ -63,6 +71,8 @@ namespace FSF.Thullo.Api.Controllers
     [HttpPost]
     public ActionResult<ListDto> Post(int boardId, ListForCreationDto dto)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var list = ListForCreationDto.ToList(dto);
       list.BoardId = boardId;
 
@@ -81,6 +91,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{listId}")]
     public ActionResult<ListDto> Put(int boardId, int listId, ListForUpdateDto dto)
     {
+      ISession session = _sessionService.GetSession(User);
+
       var list = ListForUpdateDto.ToList(dto);
       list.BoardId = boardId;
       list.Id = listId;
@@ -99,6 +111,8 @@ namespace FSF.Thullo.Api.Controllers
     [Route("{listId}")]
     public IActionResult Delete(int boardId, int listId)
     {
+      ISession session = _sessionService.GetSession(User);
+
       _thulloService.DeleteList(boardId, listId);
       return Ok();
     }
