@@ -1,5 +1,6 @@
 ﻿using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Interfaces.DataAccess;
+using FSF.Thullo.Core.Interfaces.Security;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,27 +11,33 @@ namespace FSF.Thullo.Core.Services
   public class ThulloService
   {
     private IThulloRepository _repository;
+    private IThulloAuthRepository _authRepository;
     private const string connectionString = @"Data Source=(LocalDb)\SQLSERVER;Initial Catalog=Thullo;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-    public ThulloService(IThulloRepository repository)
+    public ThulloService(IThulloRepository repository,
+      IThulloAuthRepository thulloAuthRepository)
     {
       _repository = repository;
+      _authRepository = thulloAuthRepository;
     }
 
     #region Boards
-    public IEnumerable<Board> GetBoards()
+    public IEnumerable<Board> GetBoards(ISession session)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        return _repository.GetBoards(db);
+        return _repository.GetBoards(connection, session.UserId);
       }
     }
 
-    public Board GetBoard(int boardId)
+    public Board GetBoard(ISession session, int boardId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        Board board = _repository.GetBoard(db, boardId);
+        // Authorization
+        CheckViewRights(connection, session.UserId, boardId);
+
+        Board board = _repository.GetBoard(connection, boardId);
         if (board == null)
           throw new ArgumentOutOfRangeException(nameof(boardId), $"Board with boardId: {boardId} not found");
 
@@ -38,19 +45,33 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public Board CreateBoard(Board board)
+    public Board CreateBoard(ISession session, Board board)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      Board createdBoard = null;
+
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        return _repository.CreateBoard(db, board);
+        connection.Open();
+        using (IDbTransaction transaction = connection.BeginTransaction())
+        {
+          createdBoard = _repository.CreateBoard(connection, session.UserId, board, transaction);
+
+          _authRepository.CreateBoardAccess(connection, createdBoard.Id, session.UserId, true, true, transaction);
+
+          transaction.Commit();
+        }
       }
+      return createdBoard;
     }
 
-    public Board UpdateBoard(int boardId, Board board)
+    public Board UpdateBoard(ISession session, int boardId, Board board)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        Board updatedBoard = _repository.UpdateBoard(db, boardId, board);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        Board updatedBoard = _repository.UpdateBoard(connection, boardId, board);
         if (updatedBoard == null)
           throw new ArgumentOutOfRangeException(nameof(boardId), $"Board with boardId: {boardId} not found");
 
@@ -58,29 +79,38 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public void DeleteBoard(int boardId)
+    public void DeleteBoard(ISession session, int boardId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        _repository.DeleteBoard(db, boardId);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        _repository.DeleteBoard(connection, boardId);
       }
     }
     #endregion
 
     #region lists
-    public IEnumerable<List> GetLists(int boardId)
+    public IEnumerable<List> GetLists(ISession session, int boardId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        return _repository.GetLists(db, boardId);
+        // Authorization
+        CheckViewRights(connection, session.UserId, boardId);
+
+        return _repository.GetLists(connection, boardId);
       }
     }
 
-    public List GetList(int boardId, int listId)
+    public List GetList(ISession session, int boardId, int listId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        List list = _repository.GetList(db, boardId, listId);
+        // Authorization
+        CheckViewRights(connection, session.UserId, boardId);
+
+        List list = _repository.GetList(connection, boardId, listId);
         if (list == null)
           throw new ArgumentOutOfRangeException(nameof(listId), $"List with listId: {listId} not found");
 
@@ -88,19 +118,25 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public List CreateList(int boardId, List list)
+    public List CreateList(ISession session, int boardId, List list)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        return _repository.CreateList(db, boardId, list);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        return _repository.CreateList(connection, session.UserId, boardId, list);
       }
     }
 
-    public List UpdateList(int boardId, int listId, List list)
+    public List UpdateList(ISession session, int boardId, int listId, List list)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        List updatedList = _repository.UpdateList(db, boardId, listId, list);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        List updatedList = _repository.UpdateList(connection, boardId, listId, list);
         if (list == null)
           throw new ArgumentOutOfRangeException(nameof(listId), $"List with listId: {listId} not found");
 
@@ -108,29 +144,38 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public void DeleteList(int boardId, int listId)
+    public void DeleteList(ISession session, int boardId, int listId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        _repository.DeleteList(db, boardId, listId);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        _repository.DeleteList(connection, boardId, listId);
       }
     }
     #endregion
 
     #region Cards
-    public IEnumerable<Card> GetCards(int boardId, int listId)
+    public IEnumerable<Card> GetCards(ISession session, int boardId, int listId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        return _repository.GetCards(db, boardId, listId);
+        // Authorization
+        CheckViewRights(connection, session.UserId, boardId);
+
+        return _repository.GetCards(connection, boardId, listId);
       }
     }
 
-    public Card GetCard(int boardId, int listId, int cardId)
+    public Card GetCard(ISession session, int boardId, int listId, int cardId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        Card card = _repository.GetCard(db, boardId, listId, cardId);
+        // Authorization
+        CheckViewRights(connection, session.UserId, boardId);
+
+        Card card = _repository.GetCard(connection, boardId, listId, cardId);
         if (card == null)
           throw new ArgumentOutOfRangeException(nameof(cardId), $"Card with cardId: {cardId} not found");
 
@@ -138,19 +183,25 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public Card CreateCard(int boardId, int listId, Card card)
+    public Card CreateCard(ISession session, int boardId, int listId, Card card)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        return _repository.CreateCard(db, boardId, listId, card);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        return _repository.CreateCard(connection, session.UserId, boardId, listId, card);
       }
     }
 
-    public Card UpdateCard(int boardId, int listId, int cardId, Card card)
+    public Card UpdateCard(ISession session, int boardId, int listId, int cardId, Card card)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        Card updatedCard = _repository.UpdateCard(db, boardId, listId, cardId, card);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        Card updatedCard = _repository.UpdateCard(connection, boardId, listId, cardId, card);
         if (card == null)
           throw new ArgumentOutOfRangeException(nameof(cardId), $"Card with cardId: {cardId} not found");
 
@@ -158,13 +209,30 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public void DeleteCard(int boardId, int listId, int cardId)
+    public void DeleteCard(ISession session, int boardId, int listId, int cardId)
     {
-      using (IDbConnection db = new SqlConnection(connectionString))
+      using (IDbConnection connection = new SqlConnection(connectionString))
       {
-        _repository.DeleteCard(db, boardId, listId, cardId);
+        // Authorization
+        CheckEditRights(connection, session.UserId, boardId);
+
+        _repository.DeleteCard(connection, boardId, listId, cardId);
       }
     }
     #endregion
+
+    private void CheckViewRights(IDbConnection connection, Guid userId, int boardId, IDbTransaction transaction = null)
+    {
+      bool canView = _authRepository.CanViewBoard(connection, userId, boardId, transaction);
+      if (!canView)
+        throw new UnauthorizedAccessException("You are not authorized to view this board.");
+    }
+
+    private void CheckEditRights(IDbConnection connection, Guid userId, int boardId, IDbTransaction transaction = null)
+    {
+      bool canEdit = _authRepository.CanEditBoard(connection, userId, boardId, transaction);
+      if (!canEdit)
+        throw new UnauthorizedAccessException("You are not authorized to edit this board.");
+    }
   }
 }

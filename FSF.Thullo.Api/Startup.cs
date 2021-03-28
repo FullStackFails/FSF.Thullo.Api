@@ -97,6 +97,7 @@ namespace FSF.Thullo.Api
     {
       services.AddScoped<ThulloService>();
       services.AddScoped<IThulloRepository, ThulloRepository>();
+      services.AddScoped<IThulloAuthRepository, ThulloAuthRepository>();
       services.AddSingleton<ISessionService, SessionService>();
     }
 

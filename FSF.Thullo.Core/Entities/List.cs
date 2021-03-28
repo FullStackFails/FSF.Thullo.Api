@@ -8,7 +8,7 @@ namespace FSF.Thullo.Core.Entities
     public string Title { get; set; }
     public int BoardId { get; set; }
     public DateTime CreatedDate { get; set; }
-    public int CreatedBy { get; set; }
+    public Guid CreatedBy { get; set; }
     public DateTime ModifiedDate { get; set; }
   }
 }

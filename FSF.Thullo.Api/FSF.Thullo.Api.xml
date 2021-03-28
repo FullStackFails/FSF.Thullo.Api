@@ -15,6 +15,7 @@
             Constructor for the boards controller.
             </summary>
             <param name="thulloService">Delegation service for Thullo business logic.</param>
+            <param name="sessionService">Service for creating a User Information object.</param>
         </member>
         <member name="M:FSF.Thullo.Api.Controllers.BoardsController.Get">
             <summary>
@@ -57,11 +58,12 @@
             A Card is a subresources of a List.
             </summary>
         </member>
-        <member name="M:FSF.Thullo.Api.Controllers.CardsController.#ctor(FSF.Thullo.Core.Services.ThulloService)">
+        <member name="M:FSF.Thullo.Api.Controllers.CardsController.#ctor(FSF.Thullo.Core.Services.ThulloService,FSF.Thullo.Core.Interfaces.Security.ISessionService)">
             <summary>
             Constructor for the cards controller.
             </summary>
             <param name="thulloService">Delegation service for Thullo business logic.</param>
+            <param name="sessionService">Service for creating a User Information object.</param>
         </member>
         <member name="M:FSF.Thullo.Api.Controllers.CardsController.Get(System.Int32,System.Int32)">
             <summary>
@@ -107,12 +109,6 @@
             <param name="listId">The id of the list.</param>
             <param name="cardId">The id of the card.</param>
         </member>
-        <member name="T:FSF.Thullo.Api.Controllers.IdentityController">
-            <summary>
-            Demo Controller for setting up OpenIdConnect.
-            TODO: Remove this controller once App is connected via bearer tokens.
-            </summary>
-        </member>
         <member name="T:FSF.Thullo.Api.Controllers.ListsController">
             <summary>
             This controller provides an interface for working with lists.
@@ -120,11 +116,12 @@
             A list is a subresource of a board.
             </summary>
         </member>
-        <member name="M:FSF.Thullo.Api.Controllers.ListsController.#ctor(FSF.Thullo.Core.Services.ThulloService)">
+        <member name="M:FSF.Thullo.Api.Controllers.ListsController.#ctor(FSF.Thullo.Core.Services.ThulloService,FSF.Thullo.Core.Interfaces.Security.ISessionService)">
             <summary>
             Constructor for the lists controller.
             </summary>
             <param name="thulloService">Delegation service for Thullo business logic.</param>
+            <param name="sessionService">Service for creating a User Information object.</param>
         </member>
         <member name="M:FSF.Thullo.Api.Controllers.ListsController.Get(System.Int32)">
             <summary>

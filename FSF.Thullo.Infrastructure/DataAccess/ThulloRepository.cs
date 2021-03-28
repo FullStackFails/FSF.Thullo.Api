@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Interfaces.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -9,24 +10,25 @@ namespace FSF.Thullo.Infrastructure.DataAccess
   public class ThulloRepository : IThulloRepository
   {
     #region Boards
-    public Board CreateBoard(IDbConnection db, Board board)
+    public Board CreateBoard(IDbConnection connection, Guid userId, Board board, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Title", board.Title, DbType.String, ParameterDirection.Input, 100);
       parameters.Add("@Description", board.Description, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@CoverPhoto", board.CoverPhoto, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@IsPrivate", board.IsPrivate, DbType.Byte, ParameterDirection.Input);
+      parameters.Add("@CreatedBy", userId, DbType.Guid, ParameterDirection.Input);
 
       var sql = @"INSERT INTO dbo.Board
-                            (Title, Description, CoverPhoto, IsPrivate)
-                            VALUES(@Title, @Description, @CoverPhoto, @IsPrivate)
+                            (Title, Description, CoverPhoto, IsPrivate, CreatedBy)
+                            VALUES(@Title, @Description, @CoverPhoto, @IsPrivate, @CreatedBy)
 
                   SELECT TOP 1 * FROM dbo.Board WHERE Id = SCOPE_IDENTITY()";
 
-      return db.QuerySingle<Board>(sql, parameters);
+      return connection.QuerySingle<Board>(sql, parameters, transaction);
     }
 
-    public void DeleteBoard(IDbConnection db, int boardId)
+    public void DeleteBoard(IDbConnection connection, int boardId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Id", boardId, DbType.Int32, ParameterDirection.Input);
@@ -34,17 +36,24 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       var sql = @"DELETE dbo.Board
                     WHERE Id = @Id";
 
-      db.Query(sql, parameters);
+      connection.Query(sql, parameters, transaction);
     }
 
-    public IEnumerable<Board> GetBoards(IDbConnection db)
+    public IEnumerable<Board> GetBoards(IDbConnection connection, Guid userId, IDbTransaction transaction = null)
     {
-      var sql = "SELECT * FROM dbo.Board";
+      var parameters = new DynamicParameters();
+      parameters.Add("@UserId", userId, DbType.Guid, ParameterDirection.Input);
 
-      return db.Query<Board>(sql);
+      var sql = @"SELECT b.*
+                    FROM dbo.Board b
+                    INNER JOIN dbo.BoardAccess ba
+                    ON b.Id = ba.BoardId
+                    WHERE ba.UserId = @UserId";
+
+      return connection.Query<Board>(sql, parameters, transaction);
     }
 
-    public Board GetBoard(IDbConnection db, int boardId)
+    public Board GetBoard(IDbConnection connection, int boardId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Id", boardId, DbType.Int32, ParameterDirection.Input);
@@ -53,10 +62,10 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     FROM dbo.Board
                     WHERE Id = @Id";
 
-      return db.QuerySingleOrDefault<Board>(sql, parameters);
+      return connection.QuerySingleOrDefault<Board>(sql, parameters, transaction);
     }
 
-    public Board UpdateBoard(IDbConnection db, int boardId, Board board)
+    public Board UpdateBoard(IDbConnection connection, int boardId, Board board, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Id", boardId, DbType.Int32, ParameterDirection.Input);
@@ -69,33 +78,33 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                       SET Title = @Title,
                       Description = @Description,
                       CoverPhoto = @CoverPhoto,
-                      IsPrivate = @IsPrivate,
-                      ModifiedDate = GetDate()
+                      IsPrivate = @IsPrivate
                       WHERE Id = @Id
 
                   SELECT TOP 1 * FROM dbo.Board WHERE Id = @Id";
 
-      return db.QuerySingleOrDefault<Board>(sql, parameters);
+      return connection.QuerySingleOrDefault<Board>(sql, parameters, transaction);
     }
     #endregion
 
     #region Lists
-    public List CreateList(IDbConnection db, int boardId, List list)
+    public List CreateList(IDbConnection connection, Guid userId, int boardId, List list, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Title", list.Title, DbType.String, ParameterDirection.Input, 100);
       parameters.Add("@BoardId", boardId, DbType.Int32, ParameterDirection.Input);
+      parameters.Add("@CreatedBy", userId, DbType.Guid, ParameterDirection.Input);
 
       var sql = @"INSERT INTO dbo.List
-                            (Title, BoardId)
-                            VALUES(@Title, @BoardId)
+                            (Title, BoardId, CreatedBy)
+                            VALUES(@Title, @BoardId, @CreatedBy)
 
                   SELECT TOP 1 * FROM dbo.List WHERE Id = SCOPE_IDENTITY()";
 
-      return db.QuerySingle<List>(sql, parameters);
+      return connection.QuerySingle<List>(sql, parameters, transaction);
     }
 
-    public void DeleteList(IDbConnection db, int boardId, int listId)
+    public void DeleteList(IDbConnection connection, int boardId, int listId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@BoardId", boardId, DbType.Int32, ParameterDirection.Input);
@@ -105,10 +114,10 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     WHERE BoardId = @BoardId
                     AND Id = @ListId";
 
-      db.Query(sql, parameters);
+      connection.Query(sql, parameters, transaction);
     }
 
-    public IEnumerable<List> GetLists(IDbConnection db, int boardId)
+    public IEnumerable<List> GetLists(IDbConnection connection, int boardId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@BoardId", boardId, DbType.Int32, ParameterDirection.Input);
@@ -116,10 +125,10 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       var sql = @"SELECT * FROM dbo.List
                     WHERE BoardId = @BoardId";
 
-      return db.Query<List>(sql, parameters);
+      return connection.Query<List>(sql, parameters, transaction);
     }
 
-    public List GetList(IDbConnection db, int boardId, int listId)
+    public List GetList(IDbConnection connection, int boardId, int listId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@BoardId", boardId, DbType.Int32, ParameterDirection.Input);
@@ -129,45 +138,45 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     WHERE BoardId = @BoardId
                     AND Id = @ListId";
 
-      return db.QuerySingleOrDefault<List>(sql, parameters);
+      return connection.QuerySingleOrDefault<List>(sql, parameters, transaction);
     }
 
-    public List UpdateList(IDbConnection db, int boardId, int listId, List list)
+    public List UpdateList(IDbConnection connection, int boardId, int listId, List list, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Id", listId, DbType.Int32, ParameterDirection.Input);
       parameters.Add("@Title", list.Title, DbType.String, ParameterDirection.Input, 100);
 
       var sql = @"UPDATE dbo.List
-                      SET Title = @Title,
-                      ModifiedDate = GetDate()
+                      SET Title = @Title
                       WHERE Id = @Id
 
                   SELECT TOP 1 * FROM dbo.List WHERE Id = @Id";
 
-      return db.QuerySingleOrDefault<List>(sql, parameters);
+      return connection.QuerySingleOrDefault<List>(sql, parameters, transaction);
     }
     #endregion
 
     #region Cards
-    public Card CreateCard(IDbConnection db, int boardId, int listId, Card card)
+    public Card CreateCard(IDbConnection connection, Guid userId, int boardId, int listId, Card card, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Title", card.Title, DbType.String, ParameterDirection.Input, 100);
       parameters.Add("@Description", card.Description, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@CoverImage", card.CoverImage, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@ListId", listId, DbType.Int32, ParameterDirection.Input);
+      parameters.Add("@CreatedBy", userId, DbType.Guid, ParameterDirection.Input);
 
       var sql = @"INSERT INTO dbo.Card
-                            (Title, Description, CoverImage, ListId)
-                            VALUES(@Title, @Description, @CoverImage, @ListId)
+                            (Title, Description, CoverImage, ListId, CreatedBy)
+                            VALUES(@Title, @Description, @CoverImage, @ListId, @CreatedBy)
 
                   SELECT TOP 1 * FROM dbo.Card WHERE Id = SCOPE_IDENTITY()";
 
-      return db.QuerySingle<Card>(sql, parameters);
+      return connection.QuerySingle<Card>(sql, parameters, transaction);
     }
 
-    public IEnumerable<Card> GetCards(IDbConnection db, int boardId, int listId)
+    public IEnumerable<Card> GetCards(IDbConnection connection, int boardId, int listId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@ListId", listId, DbType.Int32, ParameterDirection.Input);
@@ -175,10 +184,10 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       var sql = @"SELECT * FROM dbo.Card
                     WHERE ListId = @ListId";
 
-      return db.Query<Card>(sql, parameters);
+      return connection.Query<Card>(sql, parameters, transaction);
     }
 
-    public Card GetCard(IDbConnection db, int boardId, int listId, int cardId)
+    public Card GetCard(IDbConnection connection, int boardId, int listId, int cardId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@ListId", listId, DbType.Int32, ParameterDirection.Input);
@@ -188,10 +197,10 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     WHERE ListId = @ListId
                     AND Id = @CardId";
 
-      return db.QuerySingleOrDefault<Card>(sql, parameters);
+      return connection.QuerySingleOrDefault<Card>(sql, parameters, transaction);
     }
 
-    public Card UpdateCard(IDbConnection db, int boardId, int listId, int cardId, Card card)
+    public Card UpdateCard(IDbConnection connection, int boardId, int listId, int cardId, Card card, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Id", cardId, DbType.Int32, ParameterDirection.Input);
@@ -202,16 +211,15 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       var sql = @"UPDATE dbo.Card
                       SET Title = @Title,
                       Description = @Description,
-                      CoverImage = @CoverImage,
-                      ModifiedDate = GetDate()
+                      CoverImage = @CoverImage
                       WHERE Id = @Id
 
                   SELECT TOP 1 * FROM dbo.Card WHERE Id = @Id";
 
-      return db.QuerySingleOrDefault<Card>(sql, parameters);
+      return connection.QuerySingleOrDefault<Card>(sql, parameters, transaction);
     }
 
-    public void DeleteCard(IDbConnection db, int boardId, int listId, int cardId)
+    public void DeleteCard(IDbConnection connection, int boardId, int listId, int cardId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@ListId", listId, DbType.Int32, ParameterDirection.Input);
@@ -221,11 +229,11 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                     WHERE ListId = @ListId
                     AND Id = @CardId";
 
-      db.Query(sql, parameters);
+      connection.Query(sql, parameters, transaction);
     }
     #endregion
 
-    private bool BoardExists(IDbConnection db, int boardId)
+    private bool BoardExists(IDbConnection connection, int boardId)
     {
       bool exists = false;
 
@@ -234,18 +242,18 @@ namespace FSF.Thullo.Infrastructure.DataAccess
 
       var sql = @"IF EXISTS (
 	                  SELECT TOP 1 *
-		                  FROM Board
+		                  FROM dbo.Board
 		                  WHERE id = @Id)
 	                  SELECT 1 AS found
                   ELSE
 	                  SELECT 0 AS Found";
 
-      exists = db.ExecuteScalar<bool>(sql, parameters);
+      exists = connection.ExecuteScalar<bool>(sql, parameters);
 
       return exists;
     }
 
-    private bool ListExists(IDbConnection db, int boardId, int listId)
+    private bool ListExists(IDbConnection connection, int boardId, int listId)
     {
       bool exists = false;
 
@@ -262,12 +270,12 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                   ELSE
 	                  SELECT 0 AS Found";
 
-      exists = db.ExecuteScalar<bool>(sql, parameters);
+      exists = connection.ExecuteScalar<bool>(sql, parameters);
 
       return exists;
     }
 
-    private bool CardExists(IDbConnection db, int boardId, int listId, int cardId)
+    private bool CardExists(IDbConnection connection, int boardId, int listId, int cardId)
     {
       bool exists = false;
 
@@ -284,7 +292,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                   ELSE
 	                  SELECT 0 AS Found";
 
-      exists = db.ExecuteScalar<bool>(sql, parameters);
+      exists = connection.ExecuteScalar<bool>(sql, parameters);
 
       return exists;
     }
