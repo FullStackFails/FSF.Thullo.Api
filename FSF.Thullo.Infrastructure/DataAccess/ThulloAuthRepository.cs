@@ -12,7 +12,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
 {
   public class ThulloAuthRepository : IThulloAuthRepository
   {
-    public bool CanEditBoard(IDbConnection connection, Guid userId, int boardId, IDbTransaction transaction)
+    public bool CanEditBoard(IDbConnection connection, Guid userId, int boardId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@UserId", userId, DbType.Guid, ParameterDirection.Input);
@@ -31,7 +31,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       return connection.QuerySingleOrDefault<bool>(sql, parameters, transaction);
     }
 
-    public bool CanViewBoard(IDbConnection connection, Guid userId, int boardId, IDbTransaction transaction)
+    public bool CanViewBoard(IDbConnection connection, Guid userId, int boardId, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@UserId", userId, DbType.Guid, ParameterDirection.Input);
@@ -49,7 +49,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       return connection.QuerySingleOrDefault<bool>(sql, parameters, transaction);
     }
 
-    public BoardAccess CreateBoardAccess(IDbConnection connection, int boardId, Guid userId, bool canEdit, bool isOwner, IDbTransaction transaction)
+    public BoardAccess CreateBoardAccess(IDbConnection connection, int boardId, Guid userId, bool canEdit, bool isOwner, IDbTransaction transaction = null)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@UserId", userId, DbType.Guid, ParameterDirection.Input);
@@ -66,12 +66,12 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       return connection.QuerySingle<BoardAccess>(sql, parameters, transaction);
     }
 
-    public IEnumerable<BoardAccess> GetBoardAccessForUser(IDbConnection connection, Guid userId, IDbTransaction transaction)
+    public IEnumerable<BoardAccess> GetBoardAccessForUser(IDbConnection connection, Guid userId, IDbTransaction transaction = null)
     {
       throw new NotImplementedException();
     }
 
-    public IEnumerable<Guid> GetBoardUsers(IDbConnection connection, int boardId, IDbTransaction transaction)
+    public IEnumerable<Guid> GetBoardUsers(IDbConnection connection, int boardId, IDbTransaction transaction = null)
     {
       throw new NotImplementedException();
     }

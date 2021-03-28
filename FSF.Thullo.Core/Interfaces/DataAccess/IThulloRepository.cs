@@ -9,7 +9,7 @@ namespace FSF.Thullo.Core.Interfaces.DataAccess
   {
     // Boards
     Board CreateBoard(IDbConnection connection, Guid userId, Board board, IDbTransaction transaction = null);
-    IEnumerable<Board> GetBoards(IDbConnection connection, IDbTransaction transaction = null);
+    IEnumerable<Board> GetBoards(IDbConnection connection, Guid userId, IDbTransaction transaction = null);
     Board? GetBoard(IDbConnection connection, int boardId, IDbTransaction transaction = null);
     Board? UpdateBoard(IDbConnection connection, int boardId, Board board, IDbTransaction transaction = null);
     void DeleteBoard(IDbConnection connection, int boardId, IDbTransaction transaction = null);

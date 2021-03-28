@@ -39,11 +39,18 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       connection.Query(sql, parameters, transaction);
     }
 
-    public IEnumerable<Board> GetBoards(IDbConnection connection, IDbTransaction transaction = null)
+    public IEnumerable<Board> GetBoards(IDbConnection connection, Guid userId, IDbTransaction transaction = null)
     {
-      var sql = "SELECT * FROM dbo.Board";
+      var parameters = new DynamicParameters();
+      parameters.Add("@UserId", userId, DbType.Guid, ParameterDirection.Input);
 
-      return connection.Query<Board>(sql, transaction);
+      var sql = @"SELECT b.*
+                    FROM dbo.Board b
+                    INNER JOIN dbo.BoardAccess ba
+                    ON b.Id = ba.BoardId
+                    WHERE ba.UserId = @UserId";
+
+      return connection.Query<Board>(sql, parameters, transaction);
     }
 
     public Board GetBoard(IDbConnection connection, int boardId, IDbTransaction transaction = null)
