@@ -1,5 +1,6 @@
 ﻿using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Interfaces.DataAccess;
+using FSF.Thullo.Core.Interfaces.Security;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +19,7 @@ namespace FSF.Thullo.Core.Services
     }
 
     #region Boards
-    public IEnumerable<Board> GetBoards()
+    public IEnumerable<Board> GetBoards(ISession session)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -26,7 +27,7 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public Board GetBoard(int boardId)
+    public Board GetBoard(ISession session, int boardId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -38,15 +39,15 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public Board CreateBoard(Board board)
+    public Board CreateBoard(ISession session, Board board)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.CreateBoard(db, board);
+        return _repository.CreateBoard(db, session.UserId, board);
       }
     }
 
-    public Board UpdateBoard(int boardId, Board board)
+    public Board UpdateBoard(ISession session, int boardId, Board board)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -58,7 +59,7 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public void DeleteBoard(int boardId)
+    public void DeleteBoard(ISession session, int boardId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -68,7 +69,7 @@ namespace FSF.Thullo.Core.Services
     #endregion
 
     #region lists
-    public IEnumerable<List> GetLists(int boardId)
+    public IEnumerable<List> GetLists(ISession session, int boardId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -76,7 +77,7 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public List GetList(int boardId, int listId)
+    public List GetList(ISession session, int boardId, int listId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -88,15 +89,15 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public List CreateList(int boardId, List list)
+    public List CreateList(ISession session, int boardId, List list)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.CreateList(db, boardId, list);
+        return _repository.CreateList(db, session.UserId, boardId, list);
       }
     }
 
-    public List UpdateList(int boardId, int listId, List list)
+    public List UpdateList(ISession session, int boardId, int listId, List list)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -108,7 +109,7 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public void DeleteList(int boardId, int listId)
+    public void DeleteList(ISession session, int boardId, int listId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -118,7 +119,7 @@ namespace FSF.Thullo.Core.Services
     #endregion
 
     #region Cards
-    public IEnumerable<Card> GetCards(int boardId, int listId)
+    public IEnumerable<Card> GetCards(ISession session, int boardId, int listId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -126,7 +127,7 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public Card GetCard(int boardId, int listId, int cardId)
+    public Card GetCard(ISession session, int boardId, int listId, int cardId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -138,15 +139,15 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public Card CreateCard(int boardId, int listId, Card card)
+    public Card CreateCard(ISession session, int boardId, int listId, Card card)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.CreateCard(db, boardId, listId, card);
+        return _repository.CreateCard(db, session.UserId, boardId, listId, card);
       }
     }
 
-    public Card UpdateCard(int boardId, int listId, int cardId, Card card)
+    public Card UpdateCard(ISession session, int boardId, int listId, int cardId, Card card)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {
@@ -158,7 +159,7 @@ namespace FSF.Thullo.Core.Services
       }
     }
 
-    public void DeleteCard(int boardId, int listId, int cardId)
+    public void DeleteCard(ISession session, int boardId, int listId, int cardId)
     {
       using (IDbConnection db = new SqlConnection(connectionString))
       {

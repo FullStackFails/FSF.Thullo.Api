@@ -43,7 +43,7 @@ namespace FSF.Thullo.Api.Controllers
     {
       ISession session = _sessionService.GetSession(User);
 
-      var cards = _thulloService.GetCards(boardId, listId).Select(c => CardDto.FromCard(c)).ToList();
+      var cards = _thulloService.GetCards(session, boardId, listId).Select(c => CardDto.FromCard(c)).ToList();
 
       return Ok(cards);
     }
@@ -61,7 +61,7 @@ namespace FSF.Thullo.Api.Controllers
     {
       ISession session = _sessionService.GetSession(User);
 
-      var card = CardDto.FromCard(_thulloService.GetCard(boardId, listId, cardId));
+      var card = CardDto.FromCard(_thulloService.GetCard(session, boardId, listId, cardId));
       return Ok(card);
     }
 
@@ -80,7 +80,7 @@ namespace FSF.Thullo.Api.Controllers
       var card = CardforCreationDto.ToCard(dto);
       card.ListId = listId;
 
-      var createdCard = CardDto.FromCard(_thulloService.CreateCard(boardId, listId, card));
+      var createdCard = CardDto.FromCard(_thulloService.CreateCard(session, boardId, listId, card));
 
       return Created(string.Empty, createdCard);
     }
@@ -103,7 +103,7 @@ namespace FSF.Thullo.Api.Controllers
       card.ListId = listId;
       card.Id = cardId;
 
-      var updatedCard = CardDto.FromCard(_thulloService.UpdateCard(boardId, listId, cardId, card));
+      var updatedCard = CardDto.FromCard(_thulloService.UpdateCard(session, boardId, listId, cardId, card));
 
       return Ok(updatedCard);
     }
@@ -120,7 +120,7 @@ namespace FSF.Thullo.Api.Controllers
     {
       ISession session = _sessionService.GetSession(User);
 
-      _thulloService.DeleteCard(boardId, listId, cardId);
+      _thulloService.DeleteCard(session, boardId, listId, cardId);
       return Ok();
     }
   }

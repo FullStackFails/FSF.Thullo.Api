@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using FSF.Thullo.Core.Entities;
 using FSF.Thullo.Core.Interfaces.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -9,17 +10,18 @@ namespace FSF.Thullo.Infrastructure.DataAccess
   public class ThulloRepository : IThulloRepository
   {
     #region Boards
-    public Board CreateBoard(IDbConnection db, Board board)
+    public Board CreateBoard(IDbConnection db, Guid userId, Board board)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Title", board.Title, DbType.String, ParameterDirection.Input, 100);
       parameters.Add("@Description", board.Description, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@CoverPhoto", board.CoverPhoto, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@IsPrivate", board.IsPrivate, DbType.Byte, ParameterDirection.Input);
+      parameters.Add("@CreatedBy", userId, DbType.Guid, ParameterDirection.Input);
 
       var sql = @"INSERT INTO dbo.Board
-                            (Title, Description, CoverPhoto, IsPrivate)
-                            VALUES(@Title, @Description, @CoverPhoto, @IsPrivate)
+                            (Title, Description, CoverPhoto, IsPrivate, CreatedBy)
+                            VALUES(@Title, @Description, @CoverPhoto, @IsPrivate, @CreatedBy)
 
                   SELECT TOP 1 * FROM dbo.Board WHERE Id = SCOPE_IDENTITY()";
 
@@ -69,8 +71,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
                       SET Title = @Title,
                       Description = @Description,
                       CoverPhoto = @CoverPhoto,
-                      IsPrivate = @IsPrivate,
-                      ModifiedDate = GetDate()
+                      IsPrivate = @IsPrivate
                       WHERE Id = @Id
 
                   SELECT TOP 1 * FROM dbo.Board WHERE Id = @Id";
@@ -80,15 +81,16 @@ namespace FSF.Thullo.Infrastructure.DataAccess
     #endregion
 
     #region Lists
-    public List CreateList(IDbConnection db, int boardId, List list)
+    public List CreateList(IDbConnection db, Guid userId, int boardId, List list)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Title", list.Title, DbType.String, ParameterDirection.Input, 100);
       parameters.Add("@BoardId", boardId, DbType.Int32, ParameterDirection.Input);
+      parameters.Add("@CreatedBy", userId, DbType.Guid, ParameterDirection.Input);
 
       var sql = @"INSERT INTO dbo.List
-                            (Title, BoardId)
-                            VALUES(@Title, @BoardId)
+                            (Title, BoardId, CreatedBy)
+                            VALUES(@Title, @BoardId, @CreatedBy)
 
                   SELECT TOP 1 * FROM dbo.List WHERE Id = SCOPE_IDENTITY()";
 
@@ -139,8 +141,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       parameters.Add("@Title", list.Title, DbType.String, ParameterDirection.Input, 100);
 
       var sql = @"UPDATE dbo.List
-                      SET Title = @Title,
-                      ModifiedDate = GetDate()
+                      SET Title = @Title
                       WHERE Id = @Id
 
                   SELECT TOP 1 * FROM dbo.List WHERE Id = @Id";
@@ -150,17 +151,18 @@ namespace FSF.Thullo.Infrastructure.DataAccess
     #endregion
 
     #region Cards
-    public Card CreateCard(IDbConnection db, int boardId, int listId, Card card)
+    public Card CreateCard(IDbConnection db, Guid userId, int boardId, int listId, Card card)
     {
       var parameters = new DynamicParameters();
       parameters.Add("@Title", card.Title, DbType.String, ParameterDirection.Input, 100);
       parameters.Add("@Description", card.Description, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@CoverImage", card.CoverImage, DbType.String, ParameterDirection.Input, 4000);
       parameters.Add("@ListId", listId, DbType.Int32, ParameterDirection.Input);
+      parameters.Add("@CreatedBy", userId, DbType.Guid, ParameterDirection.Input);
 
       var sql = @"INSERT INTO dbo.Card
-                            (Title, Description, CoverImage, ListId)
-                            VALUES(@Title, @Description, @CoverImage, @ListId)
+                            (Title, Description, CoverImage, ListId, CreatedBy)
+                            VALUES(@Title, @Description, @CoverImage, @ListId, @CreatedBy)
 
                   SELECT TOP 1 * FROM dbo.Card WHERE Id = SCOPE_IDENTITY()";
 
@@ -202,8 +204,7 @@ namespace FSF.Thullo.Infrastructure.DataAccess
       var sql = @"UPDATE dbo.Card
                       SET Title = @Title,
                       Description = @Description,
-                      CoverImage = @CoverImage,
-                      ModifiedDate = GetDate()
+                      CoverImage = @CoverImage
                       WHERE Id = @Id
 
                   SELECT TOP 1 * FROM dbo.Card WHERE Id = @Id";

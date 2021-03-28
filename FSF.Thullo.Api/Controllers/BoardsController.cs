@@ -44,7 +44,7 @@ namespace FSF.Thullo.Api.Controllers
     {
       ISession session = _sessionService.GetSession(User);
 
-      var boards = _thulloService.GetBoards().Select(b => BoardDto.FromBoard(b)).ToList();
+      var boards = _thulloService.GetBoards(session).Select(b => BoardDto.FromBoard(b)).ToList();
       return Ok(boards);
     }
 
@@ -59,7 +59,7 @@ namespace FSF.Thullo.Api.Controllers
     {
       ISession session = _sessionService.GetSession(User);
 
-      var board = BoardDto.FromBoard(_thulloService.GetBoard(boardId));
+      var board = BoardDto.FromBoard(_thulloService.GetBoard(session, boardId));
       return Ok(board);
     }
 
@@ -75,7 +75,7 @@ namespace FSF.Thullo.Api.Controllers
 
       Board board = BoardForCreationDto.ToBoard(dto);
 
-      var createdBoard = BoardDto.FromBoard(_thulloService.CreateBoard(board));
+      var createdBoard = BoardDto.FromBoard(_thulloService.CreateBoard(session, board));
       return Created(string.Empty, createdBoard);
     }
 
@@ -93,7 +93,7 @@ namespace FSF.Thullo.Api.Controllers
 
       Board board = BoardForUpdateDto.ToBoard(dto);
 
-      var updatedBoard = BoardDto.FromBoard(_thulloService.UpdateBoard(boardId, board));
+      var updatedBoard = BoardDto.FromBoard(_thulloService.UpdateBoard(session, boardId, board));
       return Ok(updatedBoard);
     }
 
@@ -107,7 +107,7 @@ namespace FSF.Thullo.Api.Controllers
     {
       ISession session = _sessionService.GetSession(User);
 
-      _thulloService.DeleteBoard(boardId);
+      _thulloService.DeleteBoard(session, boardId);
       return Ok();
     }
   }

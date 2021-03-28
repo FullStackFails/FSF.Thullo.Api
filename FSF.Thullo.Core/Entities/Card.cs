@@ -10,7 +10,7 @@ namespace FSF.Thullo.Core.Entities
     public string CoverImage { get; set; }
     public int ListId { get; set; }
     public DateTime CreatedDate { get; set; }
-    public int CreatedBy { get; set; }
+    public Guid CreatedBy { get; set; }
     public DateTime ModifiedDate { get; set; }
   }
 }
