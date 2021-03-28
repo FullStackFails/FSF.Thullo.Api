@@ -10,4 +10,5 @@
 
   CONSTRAINT FK_Card_List FOREIGN KEY (ListId)
   REFERENCES dbo.List (Id)
+  ON DELETE CASCADE
 )

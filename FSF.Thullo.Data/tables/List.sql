@@ -8,4 +8,5 @@
 
   CONSTRAINT FK_List_Board FOREIGN KEY (BoardId)
   REFERENCES dbo.Board (Id)
+  ON DELETE CASCADE
 )

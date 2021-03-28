@@ -8,4 +8,5 @@
 
   CONSTRAINT FK_Comment_Card FOREIGN KEY (CardId)
   REFERENCES dbo.Card (Id)
+  ON DELETE CASCADE
 )

@@ -11,11 +11,14 @@ namespace FSF.Thullo.Core.Services
   public class ThulloService
   {
     private IThulloRepository _repository;
+    private IThulloAuthRepository _authRepository;
     private const string connectionString = @"Data Source=(LocalDb)\SQLSERVER;Initial Catalog=Thullo;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-    public ThulloService(IThulloRepository repository)
+    public ThulloService(IThulloRepository repository,
+      IThulloAuthRepository thulloAuthRepository)
     {
       _repository = repository;
+      _authRepository = thulloAuthRepository;
     }
 
     #region Boards
@@ -41,10 +44,21 @@ namespace FSF.Thullo.Core.Services
 
     public Board CreateBoard(ISession session, Board board)
     {
+      Board createdBoard = null;
+
       using (IDbConnection db = new SqlConnection(connectionString))
       {
-        return _repository.CreateBoard(db, session.UserId, board);
+        db.Open();
+        using (IDbTransaction transaction = db.BeginTransaction())
+        {
+          createdBoard = _repository.CreateBoard(db, session.UserId, board, transaction);
+
+          _authRepository.CreateBoardAccess(db, createdBoard.Id, session.UserId, true, true, transaction);
+
+          transaction.Commit();
+        }
       }
+      return createdBoard;
     }
 
     public Board UpdateBoard(ISession session, int boardId, Board board)
