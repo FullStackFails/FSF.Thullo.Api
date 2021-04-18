@@ -96,6 +96,8 @@ namespace FSF.Thullo.Api
     private void RegisterCustomServices(IServiceCollection services)
     {
       services.AddScoped<ThulloService>();
+      services.AddScoped<UserService>();
+      services.AddScoped<IUserRepository, UserRepository>();
       services.AddScoped<IThulloRepository, ThulloRepository>();
       services.AddScoped<IThulloAuthRepository, ThulloAuthRepository>();
       services.AddSingleton<ISessionService, SessionService>();
